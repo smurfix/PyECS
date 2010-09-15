@@ -129,7 +129,7 @@ How To Use This Module
    b) export the http_proxy environment variable if you want to use proxy
    c) setup the locale if your locale is not ``us``
 
-4. Send query to the AWS, and manupilate the returned python object.
+5. Send query to the AWS, and manipulate the returned python object.
 """
 
 __author__ = "Kun Xi <kunxi@kunxi.org>"
