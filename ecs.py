@@ -319,10 +319,10 @@ def __buildPlugins():
 __plugins = __buildPlugins()
 
 # Basic class for ECS
-class Bag : 
+class Bag(object): 
     """A generic container for the python objects"""
     def __repr__(self):
-        return '<Bag instance: ' + self.__dict__.__repr__() + '>'
+        return '<%s:%s>' % (self.__class__.__name__, self.__dict__.__repr__())
     
 
 class ListIterator(list):
