@@ -447,7 +447,7 @@ def buildException(els):
     """Build the exception from the returned DOM node
     Note: only the first exception is raised."""
     error = els[0]
-    class_name = error.childNodes[0].firstChild.data[4:].replace(".", "")
+    class_name = error.childNodes[0].firstChild.data.replace(".", "")
     msg = error.childNodes[1].firstChild.data 
 
     e = globals()[ class_name ](msg)
