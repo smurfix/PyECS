@@ -418,7 +418,7 @@ for err in (
 "XSLTTransformationError",
 "ECommerceServiceNoExactMatches",
 ):
-	globals()[err] = type(err, (AWSException,), {});
+    globals()[err] = type(err, (AWSException,), {});
 
 
 def buildRequest(argv):
@@ -458,7 +458,7 @@ def buildException(els):
     msg = error.childNodes[1].firstChild.data 
 
     if class_name not in globals():
-	globals()[class_name] = type(str(class_name), (AWSException,), {});
+        globals()[class_name] = type(str(class_name), (AWSException,), {});
     e = globals()[class_name](msg)
     return e
 
