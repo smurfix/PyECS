@@ -227,10 +227,9 @@ def __buildPlugins():
         'Images': ((), (), ('ImageSets',), ('ImageSet',), {}),
         'ItemAttributes': ((), ('ItemAttributes',), (), (), {}),
         'ItemIds': ((), (), (), (), {}),
-        'ItemLookup.Small': ((), ('ItemAttributes',), (), ('Item',), 
-            {'Items': ('OfferPage', 'OfferPages', 10) }),
+        'ItemLookup.Small': ((), ('ItemAttributes',), (), ('Item',), {}),
         'ItemSearch.Small': ((), ('ItemAttributes',), (), ('Item',), 
-            {'Items': ('ItemPage', 'TotalPages', 10) }),
+            {'Items': ('ItemPage', 'TotalPages', 'TotalResults', 10) }),
         'Large': ((), (), (), (), {}),
         'ListFull': ((), (), (), ('ListItem', ), {}),
         'ListInfo': ((), (), (), (), {}),
@@ -243,7 +242,7 @@ def __buildPlugins():
         'NewReleases': ((), (), ('NewReleases',), ('NewRelease',), {}),
         'OfferFull': ((), (), (), (), {}),
         'OfferListings': ((), (), (), (), {}),
-        'Offers': ((), (), (), ('Offer',), {'Offers': ('OfferPage', 'TotalOfferPages', 10)}),
+        'Offers': ((), (), (), ('Offer',), {'Offers': ('OfferPage', 'TotalOfferPages', 'TotalOffers', 10)}),
         'OfferSummary': ((), (), (), (), {}),
         'Request': (('Request',), (), (), (), {}),
         'Reviews': ((), (), ('CustomerReviews', ),('Review',), {}),
@@ -329,7 +328,7 @@ class ListIterator(list):
     pass
 
 
-class PaginatedIterator(ListIterator):
+class PaginatedIterator(object):
     def __init__(self, XMLSearch, arguments, keywords, element, plugins):
         """
         Initialize a `PaginatedIterator` object.
@@ -341,26 +340,51 @@ class PaginatedIterator(ListIterator):
         - `element`: a DOM element, the root of the collection
         - `plugins`: a dictionary, collection of plugged objects
         """
-        kwItems, (kwPage, kwTotalPages, pageSize) = keywords
+        kwItems, (kwPage, kwTotalPages, kwTotalItems, pageSize) = keywords
 
         self.search = XMLSearch 
         self.arguments = arguments 
         self.plugins = plugins
         self.keywords ={'Items':kwItems, 'Page':kwPage}
         self.total_page = int(element.getElementsByTagName(kwTotalPages).item(0).firstChild.data)
+        self.total_item = int(element.getElementsByTagName(kwTotalItems).item(0).firstChild.data)
         self.page = 1
         self.cache = unmarshal(XMLSearch, arguments, element, plugins, ListIterator())
 
+	def __repr__(self):
+		return "<%s:%s/%s(%s)>" % (self.__class__.__name__, self.page,self.total_page,self.total_item)
+
     def __iter__(self):
+        """\
+            WARNING: this iterator cannot run more than once at a time.
+            TODO: return a separate iterator object with its own cache."""
         while True:
             for x in self.cache:
                 yield x
             self.page += 1
             if self.page > self.total_page:
+                self.page = 1
+            if self.total_page > 1:
+                self.arguments[self.keywords['Page']] = self.page
+                dom = self.search(** self.arguments)
+                self.cache = unmarshal(self.search, self.arguments, dom.getElementsByTagName(self.keywords['Items']).item(0), self.plugins, ListIterator())
+            if self.page == 1:
                 raise StopIteration
+
+    def __len__(self):
+        return self.total_item
+
+    def __getitem__(self,i):
+        if i < 0 or i >= self.total_item:
+            raise IndexError(i)
+        p = (i // 10) +1
+        if self.page != p:
+            self.page = p
             self.arguments[self.keywords['Page']] = self.page
             dom = self.search(** self.arguments)
             self.cache = unmarshal(self.search, self.arguments, dom.getElementsByTagName(self.keywords['Items']).item(0), self.plugins, ListIterator())
+        return self.cache[i % 10]
+        
 
 
 def SimpleObject(XMLSearch, arguments, kwItem, plugins=None):
