@@ -172,8 +172,8 @@ def __buildPlugins():
     ResponseGroups heirachy:
     Parent => children,
 
-    The benefit of this layer is to reduce the redundency, when
-    the child ResponseGroup change, it propaged to the parent
+    The benefit of this layer is to reduce redundancy. When
+    the child ResponseGroup changes, it is propaged to the parent
     automatically
     """
     rgh = {
