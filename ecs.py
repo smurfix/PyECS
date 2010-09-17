@@ -1,12 +1,10 @@
 # Author: Kun Xi <kunxi@kunxi.org>
 # License: Python Software Foundation License
 # 
-# Note: This version, 0.3.1, supports the signed requests required
-# by Amazon.
-# The changes over 0.3.0 are based on a patch for 0.2.0 found here:
-# http://blog.umlungu.co.uk/blog/2009/jul/12/pyaws-adding-request-authentication
-# To make it work, just download pyaws from http://trac2.assembla.com/pyaws
-# and replace the ecs.py file with this one.
+# Note: This version, 0.3.2, supports the signed requests required
+# by Amazon, adds better error handling, and a bunch of other changes.
+# Author: Matthias Urlichs <matthias@urlichs.de>
+# 
 
 """
 A Python wrapper to access Amazon Web Service(AWS) E-Commerce Serive APIs,

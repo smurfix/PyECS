@@ -38,3 +38,9 @@ NOTE: we are not going to wrap the ItemLookup in a class, considering the overhe
 Before this section is complete, you could take a look at tests/ for more details about PyAWS in action.
 
 
+4. Branch notice
+This code has been modified by Matthias Urlichs <matthias@urlichs.de>, based on work by others
+(notably via http://bitbucket.org/johnpaulett/pyaws/overview/ and http://gist.github.com/315868).
+
+Its main repository is on github, at http://github.com/smurfix/PyECS.
+

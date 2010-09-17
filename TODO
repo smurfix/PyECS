@@ -1,0 +1,6 @@
+The documentation is not yet completely up-to-date. (Not my fault. --M:U)
+
+The tests don't work any more because Amazon requires signed requests.
+(Feel free to register an anonymous key and email it to me.)
+
+ItemLookup: Offer array is empty.
