@@ -392,6 +392,7 @@ class ExactParameterRequirement(AWSException): pass
 class ExceededMaximumParameterValues(AWSException): pass
 class InsufficientParameterValues(AWSException): pass
 class InternalError(AWSException): pass
+class InvalidClientTokenId(AWSException): pass
 class InvalidEnumeratedParameter(AWSException): pass
 class InvalidISO8601Time(AWSException): pass
 class InvalidOperationForMarketplace(AWSException): pass
