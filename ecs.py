@@ -383,38 +383,42 @@ def Pagination(XMLSearch, arguments, keywords, plugins):
 
 # Exception classes
 class AWSException(Exception) : pass
-class NoLicenseKey(AWSException) : pass
-class NoSecretKey(AWSException) : pass
-class BadLocale(AWSException) : pass
-class BadOption(AWSException): pass
-# Runtime exception
-class ExactParameterRequirement(AWSException): pass
-class ExceededMaximumParameterValues(AWSException): pass
-class InsufficientParameterValues(AWSException): pass
-class InternalError(AWSException): pass
-class InvalidClientTokenId(AWSException): pass
-class InvalidEnumeratedParameter(AWSException): pass
-class InvalidISO8601Time(AWSException): pass
-class InvalidOperationForMarketplace(AWSException): pass
-class InvalidOperationParameter(AWSException): pass
-class InvalidParameterCombination(AWSException): pass
-class InvalidParameterValue(AWSException): pass
-class InvalidResponseGroup(AWSException): pass
-class InvalidServiceParameter(AWSException): pass
-class InvalidSubscriptionId(AWSException): pass
-class InvalidXSLTAddress(AWSException): pass
-class MaximumParameterRequirement(AWSException): pass
-class MinimumParameterRequirement(AWSException): pass
-class MissingOperationParameter(AWSException): pass
-class MissingParameterCombination(AWSException): pass
-class MissingParameters(AWSException): pass
-class MissingParameterValueCombination(AWSException): pass
-class MissingServiceParameter(AWSException): pass
-class ParameterOutOfRange(AWSException): pass
-class ParameterRepeatedInRequest(AWSException): pass
-class RestrictedParameterValueCombination(AWSException): pass
-class XSLTTransformationError(AWSException): pass
-class ECommerceServiceNoExactMatches(AWSException): pass
+
+for err in (
+"NoLicenseKey",
+"NoSecretKey",
+"BadLocale",
+"BadOption",
+# runtime errors
+"ExactParameterRequirement",
+"ExceededMaximumParameterValues",
+"InsufficientParameterValues",
+"InternalError",
+"InvalidClientTokenId",
+"InvalidEnumeratedParameter",
+"InvalidISO8601Time",
+"InvalidOperationForMarketplace",
+"InvalidOperationParameter",
+"InvalidParameterCombination",
+"InvalidParameterValue",
+"InvalidResponseGroup",
+"InvalidServiceParameter",
+"InvalidSubscriptionId",
+"InvalidXSLTAddress",
+"MaximumParameterRequirement",
+"MinimumParameterRequirement",
+"MissingOperationParameter",
+"MissingParameterCombination",
+"MissingParameters",
+"MissingParameterValueCombination",
+"MissingServiceParameter",
+"ParameterOutOfRange",
+"ParameterRepeatedInRequest",
+"RestrictedParameterValueCombination",
+"XSLTTransformationError",
+"ECommerceServiceNoExactMatches",
+):
+	globals()[err] = type(err, (AWSException,), {});
 
 
 def buildRequest(argv):
@@ -449,9 +453,13 @@ def buildException(els):
     Note: only the first exception is raised."""
     error = els[0]
     class_name = error.childNodes[0].firstChild.data.replace(".", "")
+    if class_name.startswith("AWS"):
+        class_name = class_name[3:]
     msg = error.childNodes[1].firstChild.data 
 
-    e = globals()[ class_name ](msg)
+    if class_name not in globals():
+	globals()[class_name] = type(str(class_name), (AWSException,), {});
+    e = globals()[class_name](msg)
     return e
 
 
